@@ -29,7 +29,7 @@ namespace _2019BB601
         {
             services.AddDbContext<_2019BB601Context> {
                 opt -> opt.useSqlServer(
-                    Configuration.GetConnectionString("equiposdbConnection")
+                    Configuration.GetConnectionString("equiposdbConnection");
                 )
             }
             services.AddControllers();
