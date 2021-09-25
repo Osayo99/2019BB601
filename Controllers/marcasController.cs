@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 using _2019BB601.Models;
+using System.Linq;
+using Microsoft.EntityFrameworkCore;
 
 namespace _2019BB601.Controllers
 {
@@ -13,11 +15,101 @@ namespace _2019BB601.Controllers
             this._contexto = miContexto;
         }
 
-        [HttpGet]
+        /*[HttpGet]
         [Route("api/marcas")]
         public IActionResult Get(){
         var marcasList = _contexto.marcas;
         return Ok(marcasList);
+        }*/
+
+        [HttpGet]
+        [Route("api/marcas")]
+        public IActionResult Get()
+        {
+            IEnumerable<marcas> marcasList = from e in _contexto.marcas
+                                               select e;
+
+            if (marcasList.Count() > 0)
+            {
+                return Ok(marcasList);
+            }
+            return NotFound();
+        }
+
+        [HttpGet]
+        [Route("api/marcas/{id}")]
+        public IActionResult getbyId(int id)
+        {
+            marcas unMarca = (from e in _contexto.marcas
+                               where e.id_marcas == id
+                               select e).FirstOrDefault();
+            if (unMarca != null)
+            {
+                return Ok(unMarca);
+            }
+            return NotFound();
+        }
+
+        [HttpGet]
+        [Route("api/marcas/buscarNombre/{nombre}")]
+        public IActionResult buscarNombre(string nombre)
+        {
+            IEnumerable<marcas> marcasPorNombre = from e in _contexto.marcas
+                                                    where e.nombre_marca.Contains(nombre)
+                                                   select e;
+            if (marcasPorNombre.Count() > 0)
+            {
+                return Ok(marcasPorNombre);
+            }
+
+            return NotFound();
+        }
+
+
+        [HttpPost]
+        [Route("api/marcas/insertar")]
+        public IActionResult nuevaMarca([FromBody] marcas marcaNueva)
+        {
+            try
+            {
+                IEnumerable<marcas> marcaExiste = from e in _contexto.marcas
+                                                    where e.nombre_marca == marcaNueva.nombre_marca
+                                                  select e;
+                if (marcaExiste.Count() == 0)
+                {
+                    _contexto.marcas.Add(marcaNueva);
+                    _contexto.SaveChanges();
+                    return Ok(marcaNueva);
+                }
+                return BadRequest(marcaExiste);
+            }
+            catch (System.Exception)
+            {
+
+                return BadRequest();
+            }
+        }
+
+        [HttpPut]
+        [Route("api/marcas/modificar")]
+        public IActionResult updateMarca([FromBody] marcas marcaModificar)
+        {
+            marcas marcaExiste = (from e in _contexto.marcas
+                                    where e.id_marcas == marcaModificar.id_marcas
+                                    select e).FirstOrDefault();
+            if (marcaExiste is null)
+            {
+                return NotFound();
+            }
+
+            marcaExiste.nombre_marca = marcaModificar.nombre_marca;
+            marcaExiste.estados = marcaModificar.estados;
+         
+
+            _contexto.Entry(marcaExiste).State = EntityState.Modified;
+            _contexto.SaveChanges();
+
+            return Ok(marcaExiste);
         }
     }
 }
