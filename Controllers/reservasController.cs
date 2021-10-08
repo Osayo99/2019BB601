@@ -45,7 +45,7 @@ namespace _2019BB601.Controllers
         [HttpGet]
         [Route("api/reservas/buscasalida/{salida}")]
 
-        public IActionResult obtenerSalida(date salida)
+        public IActionResult obtenerSalida(string salida)
         {
             IEnumerable<reservas> reservasPorSalida = from e in _contexto.reservas
                                                     where e.fecha_salida.Contains(salida)

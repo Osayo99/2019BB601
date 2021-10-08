@@ -18,6 +18,6 @@ namespace _2019BB601
         public DbSet<carreras> carreras {get; set;}
         public DbSet<facultades> facultades {get; set;}
         public DbSet<reservas> reservas {get; set;}
-        public DbSet<estados_reservas> estados_reservas {get; set;}
+        public DbSet<estados_reserva> estados_reserva {get; set;}
     }
 }

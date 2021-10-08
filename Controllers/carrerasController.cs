@@ -19,8 +19,14 @@ namespace _2019BB601.Controllers
         [Route("api/carreras")]
         public IActionResult Get()
         {
-            IEnumerable<facultad> carrerasList = from e in _contexto.carreras
-                                               select e;
+            var carrerasList = from e in _contexto.carreras
+                                                join fac in _contexto.facultades on e.facultad_id equals fac.facultad_id
+                                                select new{
+                                                    e.carrera_id,
+                                                    e.nombre_carrera,
+                                                    e.facultad_id,
+                                                    facultad_nom = fac.nombre_facultad,
+                                                };
 
             if (carrerasList.Count() > 0)
             {
@@ -96,7 +102,6 @@ namespace _2019BB601.Controllers
             }
 
             carreraExiste.nombre_carrera = carreraModificar.nombre_carrera;
-            carreraExiste.estados = carreraModificar.estados;
          
 
             _contexto.Entry(carreraExiste).State = EntityState.Modified;

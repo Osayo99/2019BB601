@@ -16,10 +16,10 @@ namespace _2019BB601.Controllers
         }
 
         [HttpGet]
-        [Route("api/facultad")]
+        [Route("api/facultades")]
         public IActionResult Get()
         {
-            IEnumerable<facultad> facultadList = from e in _contexto.facultad
+            IEnumerable<facultades> facultadList = from e in _contexto.facultades
                                                select e;
 
             if (facultadList.Count() > 0)
@@ -30,10 +30,10 @@ namespace _2019BB601.Controllers
         }
 
         [HttpGet]
-        [Route("api/facultad/{id}")]
+        [Route("api/facultades/{id}")]
         public IActionResult getbyId(int id)
         {
-            facultad unaFacultad = (from e in _contexto.facultad
+            facultades unaFacultad = (from e in _contexto.facultades
                                where e.facultad_id == id
                                select e).FirstOrDefault();
             if (unaFacultad != null)
@@ -47,7 +47,7 @@ namespace _2019BB601.Controllers
         [Route("api/facultad/buscarFacultad/{nombre}")]
         public IActionResult buscarFacultad(string nombre)
         {
-            IEnumerable<facultad> facultadPorNombre = from e in _contexto.facultad
+            IEnumerable<facultades> facultadPorNombre = from e in _contexto.facultades
                                                     where e.nombre_facultad.Contains(nombre)
                                                    select e;
             if (facultadPorNombre.Count() > 0)
@@ -61,16 +61,16 @@ namespace _2019BB601.Controllers
 
         [HttpPost]
         [Route("api/facultad/insertar")]
-        public IActionResult nuevaFacultad([FromBody] facultad facultadNueva)
+        public IActionResult nuevaFacultad([FromBody] facultades facultadNueva)
         {
             try
             {
-                IEnumerable<facultad> facultadExiste = from e in _contexto.facultad
+                IEnumerable<facultades> facultadExiste = from e in _contexto.facultades
                                                     where e.nombre_facultad == facultadNueva.nombre_facultad
                                                   select e;
                 if (facultadExiste.Count() == 0)
                 {
-                    _contexto.facultad.Add(facultadNueva);
+                    _contexto.facultades.Add(facultadNueva);
                     _contexto.SaveChanges();
                     return Ok(facultadNueva);
                 }
@@ -85,9 +85,9 @@ namespace _2019BB601.Controllers
 
         [HttpPut]
         [Route("api/facultad/modificar")]
-        public IActionResult updateFacultad([FromBody] facultad facultadModificar)
+        public IActionResult updateFacultad([FromBody] facultades facultadModificar)
         {
-            facultad facultadExiste = (from e in _contexto.facultad
+            facultades facultadExiste = (from e in _contexto.facultades
                                     where e.facultad_id == facultadModificar.facultad_id
                                     select e).FirstOrDefault();
             if (facultadExiste is null)
@@ -96,7 +96,6 @@ namespace _2019BB601.Controllers
             }
 
             facultadExiste.nombre_facultad = facultadModificar.nombre_facultad;
-            facultadExiste.estados = facultadModificar.estados;
          
 
             _contexto.Entry(facultadExiste).State = EntityState.Modified;

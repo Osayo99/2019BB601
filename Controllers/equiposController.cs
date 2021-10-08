@@ -18,8 +18,18 @@ namespace _2019BB601.Controllers
         [HttpGet]
         [Route("api/equipos")]
         public IActionResult Get(){
-            IEnumerable<equipos> equiposList = from e in _contexto.equipos
-                                               select e;
+            var equiposList = from e in _contexto.equipos
+                              join te in _contexto.tipo_equipo on e.tipo_equipo_id equals te.id_tipo_equipo
+                              select new{
+                                  e.id_equipos,
+                                  e.nombre,
+                                  e.descripcion,
+                                  e.tipo_equipo_id,
+                                  tipo_equipo_des = te.descripcion,
+                                  e.marca_id,
+                                  e.modelo,
+                                  e.anio_compra
+                              };
 
             if (equiposList.Count() > 0)
             {

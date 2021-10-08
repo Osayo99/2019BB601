@@ -18,8 +18,17 @@ namespace _2019BB601.Controllers
         [HttpGet]
         [Route("api/usuarios")]
         public IActionResult Get(){
-            IEnumerable<usuarios> usuariosList = from e in _contexto.usuarios
-                                               select e;
+            var usuariosList = from e in _contexto.usuarios
+                                join car in _contexto.carreras on e.carrera_id equals car.carrera_id
+                                                select new{
+                                                    e.usuario_id,
+                                                    e.nombre,
+                                                    e.documento,
+                                                    e.tipo,
+                                                    e.carnet,
+                                                    e.carrera_id,
+                                                    carrera_nom = car.nombre_carrera,
+                                                };
 
             if (usuariosList.Count() > 0)
             {
